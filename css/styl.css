@@ -1,0 +1,311 @@
+
+/*index.html*/
+body {
+  font-family: "Chewy", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fff7e6;
+  color: #333;
+}
+
+
+header {
+  background-color: #d32f2f;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  background-image: url("pizzerialogo.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.navigation {
+  background-color: white;
+  border-bottom-left-radius: 10% 10vw;
+  border-bottom-right-radius: 10% 10vw;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 30px 0;
+  width: 100%;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+
+.logo {
+  height: 120px;
+  width: auto;
+}
+
+.nav-title-box {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.nav-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #2c2c2c;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+
+.nav-links li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.nav-links li a:hover {
+  color: #d32f2f;
+}
+
+/* Responsive 2 */
+@media (max-width: 900px) {
+  .nav-container {
+    flex-direction: column;
+    padding: 0 20px;
+  }
+  
+  .nav-title-box {
+    margin: 15px 0;
+  }
+
+  .nav-title {
+    font-size: 28px;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    padding: 15px;
+    background-position: top center;
+    background-size: 80%;
+  }
+
+  .logo {
+    height: 80px;
+  }
+
+  .nav-title {
+    font-size: 22px;
+  }
+
+  .nav-links li a {
+    font-size: 16px;
+  }
+
+  .navigation {
+    padding: 20px 0;
+    border-bottom-left-radius: 20% 15vw;
+    border-bottom-right-radius: 20% 15vw;
+  }
+}
+
+/*footer*/
+.footer-pizzeria {
+  background-color: #2b1e0f; 
+  color: #f3d9b1; 
+  padding: 40px 20px 20px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-blok {
+  flex: 220px;
+  margin: 10px 15px;
+}
+
+.footer-blok h3 {
+  border-bottom: 2px solid #d35400;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+  font-weight: 700;
+  font-size: 17px;
+  text-transform: uppercase;
+  color: #f3d9b1;
+}
+
+.footer-blok p {
+  font-size: 17px;
+  line-height: 1.5;
+  color: #f3d9b1;
+  margin: 6px 0;
+}
+
+.footer-mail {
+  color: #d35400;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.footer-mail:hover {
+  text-decoration: underline;
+}
+
+
+/*  Banner  */
+.banner {
+  position: relative;
+  width:110%;
+  overflow: no;
+}
+
+.banner img {
+  width: 100%;
+  height: auto;
+  object-fit: contain; 
+  display: block;
+  filter: brightness(100%);
+  padding-top: 20px;
+}
+
+/*  contact pagina */
+
+.pagina-header {
+  text-align: center;
+  padding: 40px 20px 20px;
+  background-color: #dedcff;
+  font-family: "Outfit", sans-serif;
+}
+
+.pagina-header h1 {
+  font-size: 2.5rem;
+  color: #1c1c3a;
+  margin: 0;
+}
+
+.contact-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: "Outfit", sans-serif;
+}
+
+.contact-gegevens {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contact-gegevens h2 {
+  font-size: 1.5rem;
+  margin-top: 30px;
+  color: #C4501B;
+  font-weight: 600;
+}
+
+.contact-gegevens p {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  max-width: 600px;
+}
+
+.contact-gegevens a {
+  color: #000;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.contact-gegevens a:hover {
+  color: #433bff;
+  text-decoration: underline;
+}
+
+
+.contact-container h2:last-of-type {
+  text-align: center;
+  margin-top: 40px;
+  color: #C4501B;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.pagina-header p {
+  font-size: 1.1rem;
+  color: #555;
+  margin-top: 10px;
+}
+
+/* Contactformulier  */
+.contact-formulier {
+  background: #f0f0ff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  margin: 30px auto;
+}
+
+.contact-formulier h2 {
+  text-align: center;
+  color: #1c1c3a;
+  margin-bottom: 20px;
+}
+
+.contact-formulier label {
+  font-weight: 600;
+  display: block;
+  margin-top: 15px;
+}
+
+.contact-formulier input,
+.contact-formulier textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 5px;
+  font-size: 17px;
+  font-family: "Outfit", sans-serif;
+}
+
+.contact-formulier button {
+  background-color: #433bff;
+  color: white;
+  border: none;
+  padding: 12px;
+  margin-top: 20px;
+  border-radius: 8px;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.contact-formulier button:hover {
+  background-color: #1c1c3a;
+}
