@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 class AdminOnly
 {
     
+    
     public function handle(Request $request, Closure $next)
     {
         
