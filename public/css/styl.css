@@ -1,0 +1,99 @@
+
+/*voorpagina index*/
+body {
+  font-family: "Chewy", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fff7e6;
+  color: #333;
+}
+
+
+header {
+  background-color: #d32f2f;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  background-image: url("pizzerialogo.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+.navigation {
+  background-color: white;
+  border-bottom-left-radius: 10% 10vw;
+  border-bottom-right-radius: 10% 10vw;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  padding: 30px 0;
+  width: 100%;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.logo {
+  height: 120px;
+  width: auto;
+}
+
+.nav-title-box {
+  flex-grow: 1;
+  text-align: center;
+}
+
+.nav-title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #2c2c2c;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+.nav-links li a:hover {
+  color: #d32f2f;
+}
+
+
+
+/*  Banner  */
+.banner {
+  position: relative;
+  width:110%;
+  overflow: hidden;
+}
+
+.banner img {
+  width: 100%;
+  height: auto;
+  object-fit: contain; 
+  display: block;
+  filter: brightness(100%);
+  padding-top: 20px;
+}
+
