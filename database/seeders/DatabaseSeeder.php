@@ -13,13 +13,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Maak een admin user aan
-        User::create([
-            'name' => 'admin',
-            'email' => 'admin@ehb.be',
-            'password' => Hash::make('Password!321'),
-            'is_admin' => true,
-        ]);
+        // Roep de AdminSeeder aan
+        $this->call(AdminSeeder::class);
+
+        // Maak een admin user aan (indien die niet bestaat)
+        User::firstOrCreate(
+            ['email' => 'admin@ehb.be'],
+            [
+                'name' => 'admin',
+                'password' => Hash::make('Password!321'),
+                'is_admin' => true,
+            ]
+        );
 
         // Maak een test user aan via factory
         User::factory()->create([
