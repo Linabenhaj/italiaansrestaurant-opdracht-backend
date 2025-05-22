@@ -85,10 +85,7 @@ return [
                 'smtp',
                 'log',
             ],
-<<<<<<< HEAD
-=======
             'retry_after' => 60,
->>>>>>> ad08dcc (Initial Laravel 12 project setup)
         ],
 
         'roundrobin' => [
@@ -97,10 +94,7 @@ return [
                 'ses',
                 'postmark',
             ],
-<<<<<<< HEAD
-=======
             'retry_after' => 60,
->>>>>>> ad08dcc (Initial Laravel 12 project setup)
         ],
 
     ],

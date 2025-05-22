@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-=======
 <?php
 
 namespace App\Models;
@@ -49,4 +46,3 @@ class User extends Authenticatable
         ];
     }
 }
->>>>>>> ad08dcc (Initial Laravel 12 project setup)
