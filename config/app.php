@@ -1,6 +1,9 @@
 <?php
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ad08dcc (Initial Laravel 12 project setup)
 return [
 
     /*

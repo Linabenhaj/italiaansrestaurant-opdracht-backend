@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -43,3 +44,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 Route::get('contact', [App\Http\Controllers\ContactController::class, 'show'])->name('contact.show');
 Route::post('contact', [App\Http\Controllers\ContactController::class, 'send'])->name('contact.send');
+=======
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+>>>>>>> ad08dcc (Initial Laravel 12 project setup)
