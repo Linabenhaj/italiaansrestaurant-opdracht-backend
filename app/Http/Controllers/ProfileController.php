@@ -15,37 +15,39 @@ class ProfileController extends Controller
         return view('profile.show', compact('user'));
     }
 
-    public function edit()
+    public function edit($username)
     {
         $user = Auth::user();
+        if ($user->username !== $username && !$user->is_admin) {
+            abort(403);
+        }
         return view('profile.edit', compact('user'));
     }
 
-    public function update(Request $request)
+    public function update(Request $request, $username)
     {
         $user = Auth::user();
+        if ($user->username !== $username && !$user->is_admin) {
+            abort(403);
+        }
 
         $request->validate([
-            'username' => 'nullable|string|max:255|unique:users,username,' . $user->id,
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'birthday' => 'nullable|date',
-            'about_me' => 'nullable|string',
-            'profile_photo' => 'nullable|image|max:2048',
+            'bio' => 'nullable|string|max:500',
+            'avatar' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $path;
+        }
 
         $user->username = $request->username;
         $user->birthday = $request->birthday;
-        $user->about_me = $request->about_me;
-
-        if ($request->hasFile('profile_photo')) {
-            if ($user->profile_photo) {
-                Storage::delete('public/' . $user->profile_photo);
-            }
-            $path = $request->file('profile_photo')->store('profile_photos', 'public');
-            $user->profile_photo = $path;
-        }
-
+        $user->bio = $request->bio;
         $user->save();
 
-        return redirect()->route('profile.show', $user->username)->with('success', 'Profiel bijgewerkt!');
+        return redirect()->route('profile.show', $user->username)->with('success', 'Profile updated.');
     }
 }

@@ -4,47 +4,54 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
-    public function create(): View
+    // Toon registratieformulier door get 
+    public function create()
     {
-        return view('auth.register');
+        return view('auth.register'); 
+    }
+    // Verwerk registratie door post te gebruiken
+    public function store(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        $user = $this->createUser($request->all());
+
+        auth()->login($user);
+
+        return redirect()->route('dashboard'); 
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function store(Request $request): RedirectResponse
+    protected function validator(array $data)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        return Validator::make($data, [
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
+            'birthday' => ['nullable', 'date'],
+            'profile_picture' => ['nullable', 'image', 'max:2048'],
+            'about' => ['nullable', 'string', 'max:1000'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
+    }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+    protected function createUser(array $data)
+    {
+        $path = null;
+        if (request()->hasFile('profile_picture')) {
+            $path = request()->file('profile_picture')->store('profile_pictures', 'public');
+        }
+        return User::create([
+            'username' => $data['username'],
+            'birthday' => $data['birthday'] ?? null,
+            'profile_picture' => $path,
+            'about' => $data['about'] ?? null,
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
         ]);
-
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
     }
 }
