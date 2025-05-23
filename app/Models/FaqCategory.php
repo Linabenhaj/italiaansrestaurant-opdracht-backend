@@ -8,8 +8,14 @@ class FaqCategory extends Model
 {
     protected $fillable = ['name'];
 
+    public function items()
+    {
+        return $this->hasMany(FaqItem::class);
+    }
+
     public function faqs()
     {
         return $this->hasMany(Faq::class);
     }
+
 }

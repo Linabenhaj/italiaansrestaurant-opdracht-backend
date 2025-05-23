@@ -3,50 +3,53 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Faq;
 use Illuminate\Http\Request;
+use App\Models\FaqCategory;
 
-class FaqController extends Controller
+class FaqCategoryController extends Controller
 {
-   
     public function index()
     {
-        //
+        $categories = FaqCategory::with('faqs')->get();
+        return view('admin.faq_categories.index', compact('categories'));
     }
-
 
     public function create()
     {
-        //
+        return view('admin.faq_categories.create');
     }
 
-  
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        FaqCategory::create($request->only('name'));
+
+        return redirect()->route('admin.faq-categories.index')->with('success', 'Categorie aangemaakt.');
     }
 
-    
-    public function show(Faq $faq)
+    public function edit(FaqCategory $faqCategory)
     {
-        //
+        return view('admin.faq_categories.edit', compact('faqCategory'));
     }
 
-   
-    public function edit(Faq $faq)
+    public function update(Request $request, FaqCategory $faqCategory)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $faqCategory->update($request->only('name'));
+
+        return redirect()->route('admin.faq-categories.index')->with('success', 'Categorie bijgewerkt.');
     }
 
-   
-    public function update(Request $request, Faq $faq)
+    public function destroy(FaqCategory $faqCategory)
     {
-        //
-    }
+        $faqCategory->delete();
 
- 
-    public function destroy(Faq $faq)
-    {
-        //
+        return redirect()->route('admin.faq-categories.index')->with('success', 'Categorie verwijderd.');
     }
 }
