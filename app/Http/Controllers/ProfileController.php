@@ -33,21 +33,26 @@ class ProfileController extends Controller
 
         $request->validate([
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'birthday' => 'nullable|date',
-            'bio' => 'nullable|string|max:500',
-            'avatar' => 'nullable|image|max:2048',
+            'birthdate' => 'nullable|date',
+            'about_me' => 'nullable|string|max:500',
+            'profile_picture' => 'nullable|image|max:2048',
         ]);
 
-        if ($request->hasFile('avatar')) {
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $path;
+        if ($request->hasFile('profile_picture')) {
+            // Verwijder oude profielfoto als die er is
+            if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+            // Upload nieuwe foto in profile_pictures folder
+            $path = $request->file('profile_picture')->store('profile_pictures', 'public');
+            $user->profile_picture = $path;
         }
 
         $user->username = $request->username;
-        $user->birthday = $request->birthday;
-        $user->bio = $request->bio;
+        $user->birthdate = $request->birthdate;
+        $user->about_me = $request->about_me;
         $user->save();
 
-        return redirect()->route('profile.show', $user->username)->with('success', 'Profile updated.');
+        return redirect()->route('profile.show', $user->username)->with('success', 'Profiel succesvol bijgewerkt.');
     }
 }

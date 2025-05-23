@@ -7,6 +7,10 @@ use App\Http\Controllers\NewsItemController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Models\FaqCategory;
+use App\Http\Controllers\Public\FaqSubmissionController;
+
+Route::post('/faq/submit', [FaqSubmissionController::class, 'submit'])->name('faq.submit');
+
 
 Route::get('/', function () {
     $faqCategories = FaqCategory::with('faqs')->get();
