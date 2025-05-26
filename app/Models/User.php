@@ -1,17 +1,17 @@
-<?php 
+<?php
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = [
+     protected $fillable = [
+        'name',
         'username',
         'email',
         'password',
@@ -21,24 +21,24 @@ class User extends Authenticatable
         'is_admin',
     ];
 
-
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Velden die automatisch gecast worden.
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'birthday' => 'date',
-        'is_admin' => 'boolean',
+        'birthday'          => 'date',
+        'is_admin'          => 'boolean',
     ];
 
-    /**
-     * De gebruiker kan meerdere bestellingen hebben.
-     */
+    public function isAdmin(): bool
+{
+    return $this->is_admin === 1
+        || $this->user_type === 'admin';
+}
+
+
     public function orders()
     {
         return $this->hasMany(Order::class);

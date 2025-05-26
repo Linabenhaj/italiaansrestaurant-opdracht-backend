@@ -1,0 +1,1 @@
+Mails worden gelogd in storage/logs/laravel.log omdat het e-mailadres fictief is.

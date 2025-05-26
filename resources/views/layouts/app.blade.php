@@ -9,9 +9,17 @@
 </head>
 <body class="bg-yellow-50 font-outfit min-h-screen flex flex-col">
 
-    <header class="bg-red-900 text-white p-4 text-center font-sigmar">
-        <h1 class="text-3xl">Pizzeria Antonio</h1>
-    </header>
+<header class="bg-red-900 text-white p-4 text-center font-sigmar">
+    <h1 class="text-3xl">Pizzeria Antonio</h1>
+    <nav class="mt-4">
+        <a href="{{ url('/') }}" class="mx-2 underline">Home</a>
+        <a href="{{ route('users.index') }}" class="mx-2 underline">Gebruikers</a>
+        @auth
+            <a href="{{ route('dashboard') }}" class="mx-2 underline">Dashboard</a>
+        @endauth
+    </nav>
+</header>
+
 
     <main class="flex-grow max-w-md mx-auto bg-white rounded-lg shadow-md mt-10 p-8">
         @yield('content')

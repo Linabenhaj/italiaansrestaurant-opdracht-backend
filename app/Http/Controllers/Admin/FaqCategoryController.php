@@ -9,10 +9,11 @@ use App\Models\FaqCategory;
 
 class FaqController extends Controller
 {
-    public function index()
+    public function publicIndex()
     {
-        $faqs = Faq::with('category')->get();
-        return view('admin.faqs.index', compact('faqs'));
+        // Laad alle categorieën met hun vragen
+        $faqCategories = FaqCategory::with('faqs')->get();
+        return view('faq.index', compact('faqCategories'));
     }
 
     public function create()

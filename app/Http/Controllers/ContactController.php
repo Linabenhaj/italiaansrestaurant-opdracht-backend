@@ -3,29 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ContactFormSubmitted;
+use App\Models\ContactMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
 {
-    // Laat het contactformulier zien
+    //contactformulier tonen
     public function show()
     {
-        return view('contact.form');
+        return view('contact');
     }
 
-    // Verwerk de data van formulier
+    //verwerken ingegeven formulier
     public function submit(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'message' => 'required|string',
-        ]);
+{
+    $data = $request->validate([
+        'name'    => 'required|string|max:255',
+        'email'   => 'required|email',
+        'subject' => 'required|string|max:255',
+        'message' => 'required|string',
+    ]);
 
-        // Mail sturen naar admin of jezelf
-        Mail::to('jouw-email@example.com')->send(new ContactFormSubmitted($validated));
+    // 1) Bewaar in database
+    ContactMessage::create($data);
 
-        return back()->with('success', 'Bedankt voor je bericht! We nemen snel contact op.');
-    }
+    // 2) Verstuur naar admin
+    Mail::to('admin@ehb.be')
+        ->queue(new ContactMessageMailable($data));
+
+    return back()->with('success','Uw bericht is verzonden! De admin krijgt een e-mail.');
+}
 }

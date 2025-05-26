@@ -1,17 +1,21 @@
 <?php
 
-namespace App\Http\Middleware;
-use Closure;
-use Illuminate\Http\Request;
-class AdminOnly
-{
-    public function handle(Request $request, Closure $next)
-    {
-        
-        if (!auth()->check() || !auth()->user()->is_admin) {
-            abort(403, 'Je hebt geen toegang tot deze pagina.');
-        }
+namespace App\Http\Controllers;
 
-        return $next($request);
+use App\Models\NewsItem;
+use Illuminate\Http\Request;
+
+class NewsController extends Controller
+{
+    public function index()
+    {
+        $newsItems = NewsItem::latest()->get();
+        return view('news.index', compact('newsItems'));
+    }
+
+    public function show($id)
+    {
+        $item = NewsItem::findOrFail($id);
+        return view('news.show', compact('item'));
     }
 }

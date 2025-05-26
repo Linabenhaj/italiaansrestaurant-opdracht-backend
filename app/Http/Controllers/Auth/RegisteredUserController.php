@@ -4,57 +4,38 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rules;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Show the registration view.
-     */
-    public function create()
+    // Toon registratieformulier
+    public function showRegistrationForm()
     {
         return view('auth.register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     */
-    public function store(Request $request)
+    // Verwerk registratieformulier
+    public function register(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'birthdate' => 'nullable|date',
-            'about_me' => 'nullable|string|max:1000',
-            'profile_picture' => 'nullable|image|max:2048',
+            'password' => 'required|string|min:8|confirmed',
         ]);
-
-        $profilePath = null;
-        if ($request->hasFile('profile_picture')) {
-            $profilePath = $request->file('profile_picture')->store('profile_pictures', 'public');
-        }
 
         $user = User::create([
             'name' => $request->name,
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'birthdate' => $request->birthdate,
-            'about_me' => $request->about_me,
-            'profile_picture' => $profilePath,
+            'user_type' => 'user', 
         ]);
 
-        event(new Registered($user));
+        Auth::login($user);
 
-        auth()->login($user);
-
-        return redirect('/'); // Of naar profielpagina: redirect('/profile/' . $user->username)
+        return redirect()->route('user.dashboard');
     }
 }

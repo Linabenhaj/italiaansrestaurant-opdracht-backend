@@ -6,17 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    
     public function up(): void
     {
-        if (!Schema::hasTable('orders')) {
-            Schema::create('orders', function (Blueprint $table) {
-                $table->id();
-                $table->foreignId('user_id')->constrained()->onDelete('cascade');
-                $table->string('pizza');
-                $table->timestamps();
-            });
-        }
+        Schema::create('orders', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('pizza');
+            $table->text('opmerkingen')->nullable();
+            $table->timestamps();
+        });
     }
 
     public function down(): void

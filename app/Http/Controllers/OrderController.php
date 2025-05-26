@@ -1,12 +1,30 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
+use App\Models\Order;
+
 class OrderController extends Controller
 {
-    public function index()
+    //niuewe bestelling opgeslagen
+    public function store(Request $request)
     {
-        $orders = auth()->user()->orders()->latest()->get();
-        return view('orders.index', compact('orders'));
+        // Valideer de invoer
+        $data = $request->validate([
+            'pizza'       => 'required|string|max:255',
+            'opmerkingen' => 'nullable|string|max:1000',
+        ]);
+
+        // Maak de bestelling aan 
+        Order::create([
+            'user_id'     => $request->user()->id,
+            'pizza'       => $data['pizza'],
+            'opmerkingen' => $data['opmerkingen'] ?? null,
+            'status'      => 'pending',  // of wat je eigen status-logica is
+        ]);
+
+        // Terug met succesmelding
+        return back()->with('success', 'Je bestelling is ontvangen! Buon appetito 🍕');
     }
 }

@@ -28,6 +28,8 @@ class FaqCategoryController extends Controller
         FaqCategory::create($request->only('name'));
 
         return redirect()->route('admin.faq-categories.index')->with('success', 'Categorie aangemaakt.');
+
+        
     }
 
     public function edit(FaqCategory $faqCategory)
