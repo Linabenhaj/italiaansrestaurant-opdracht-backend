@@ -1,59 +1,56 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-  <meta charset="UTF-8">
-  <title>Contactberichten – Admin Panel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sigmar+One&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-</head>
-<body style="margin:0; font-family:'Outfit',sans-serif; display:flex; height:100vh; background:#FFF7D4;">
+@extends('admin.layout')
 
-@include('admin.partials.sidebar')
+@section('title', 'Contact Inbox – Admin Panel')
 
+@section('content')
+<main style="flex:1; padding:2rem; overflow-y:auto;">
+  <h1 style="color:#8B0000;">Inbox Contactberichten</h1>
+  <p style="color:#555;">Hieronder zie je alle ontvangen berichten van gebruikers.</p>
 
-  <main style="flex:1; padding:2rem; overflow-y:auto;">
-    <h1 style="color:#8B0000;">Contactberichten</h1>
+  @if(session('success'))
+    <div style="background:#e0ffe0; color:#006600; padding:1rem; border-radius:5px; margin-top:1rem;">
+      {{ session('success') }}
+    </div>
+  @endif
 
-    @if(session('success'))
-      <div style="background:#e0ffe0; padding:1rem; border-radius:5px; margin-bottom:1rem;">
-        {{ session('success') }}
-      </div>
-    @endif
-
-    <table style="width:100%; border-collapse:collapse;">
-      <thead style="background:#ffeaea;">
+  @if($messages->isEmpty())
+    <p style="margin-top:1rem; color:#777;"><em>Er zijn momenteel geen berichten.</em></p>
+  @else
+    <table style="width:100%; border-collapse:collapse; margin-top:1rem;">
+      <thead style="background:#fff4d6;">
         <tr>
-          <th style="padding:0.75rem; text-align:left;">Naam</th>
-          <th style="padding:0.75rem; text-align:left;">E-mail</th>
-          <th style="padding:0.75rem; text-align:left;">Bericht</th>
-          <th style="padding:0.75rem; text-align:left;">Datum</th>
-          <th style="padding:0.75rem; text-align:left;">Acties</th>
+          <th style="padding:.75rem; text-align:left;">Naam</th>
+          <th style="padding:.75rem; text-align:left;">E-mail</th>
+          <th style="padding:.75rem; text-align:left;">Onderwerp</th>
+          <th style="padding:.75rem; text-align:left;">Acties</th>
         </tr>
       </thead>
       <tbody>
-        @forelse($messages as $msg)
-        <tr style="border-bottom:1px solid #ccc;">
-          <td style="padding:0.75rem;">{{ $msg->name }}</td>
-          <td style="padding:0.75rem;">{{ $msg->email }}</td>
-          <td style="padding:0.75rem; max-width:300px; white-space:pre-wrap;">{{ $msg->message }}</td>
-          <td style="padding:0.75rem;">{{ $msg->created_at->format('d-m-Y H:i') }}</td>
-          <td style="padding:0.75rem;">
-            <form action="{{ route('admin.contact.destroy', $msg) }}" method="POST" onsubmit="return confirm('Weet je het zeker?');">
-              @csrf @method('DELETE')
-              <button type="submit" style="background:none;border:none;color:#c00;cursor:pointer;">Verwijder</button>
-            </form>
-          </td>
-        </tr>
-        @empty
-        <tr>
-          <td colspan="5" style="padding:1rem; text-align:center;">Geen contactberichten gevonden.</td>
-        </tr>
-        @endforelse
+        @foreach($messages as $message)
+          <tr style="border-bottom:1px solid #ccc;">
+            <td style="padding:.75rem;">{{ $message->name }}</td>
+            <td style="padding:.75rem;">{{ $message->email }}</td>
+            <td style="padding:.75rem;">{{ $message->subject }}</td>
+            <td style="padding:.75rem;">
+              <a href="{{ route('admin.contact.show', $message->id) }}"
+                 style="color:#0066cc; text-decoration:none; margin-right:1rem;">Bekijk</a>
+
+              <form method="POST"
+                    action="{{ route('admin.contact.destroy', $message->id) }}"
+                    style="display:inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                        onclick="return confirm('Weet je zeker dat je dit bericht wilt verwijderen?')"
+                        style="background:none; border:none; color:#c00; cursor:pointer; padding:0;">
+                  Verwijder
+                </button>
+              </form>
+            </td>
+          </tr>
+        @endforeach
       </tbody>
     </table>
-
-    <div style="margin-top:1rem; text-align:center;">
-      {{ $messages->links() }}
-    </div>
-  </main>
-</body>
-</html>
+  @endif
+</main>
+@endsection

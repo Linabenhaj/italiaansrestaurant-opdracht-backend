@@ -1,0 +1,21 @@
+[90m= [39m[34;4mApp\Models\User[39;24m {#6304
+    [34mid[39m: [35m1[39m,
+    [34mname[39m: "[32mAdmin Gebruiker[39m",
+    [34musername[39m: "[32madmin[39m",
+    [34memail[39m: "[32madmin@ehb.be[39m",
+    [34memail_verified_at[39m: [36mnull[39m,
+    #[33mpassword[39m: "[32m$2y$12$0rzXrQ3k45Y/agpiEj3RaeZXa0OtpvCQ/rBKEdlAtc/bsZlf9vNcS[39m",
+    [34mrole[39m: "[32muser[39m",
+    [34mbirthday[39m: [36mnull[39m,
+    [34mabout[39m: [36mnull[39m,
+    [34mprofile_picture[39m: [36mnull[39m,
+    [34mis_admin[39m: [35m1[39m,
+    #[33mremember_token[39m: [36mnull[39m,
+    [34mcreated_at[39m: "[32m2025-05-25 12:03:15[39m",
+    [34mupdated_at[39m: "[32m2025-05-25 19:20:50[39m",
+    [34mtwo_factor_secret[39m: [36mnull[39m,
+    [34mtwo_factor_recovery_codes[39m: [36mnull[39m,
+    [34mtwo_factor_confirmed_at[39m: [36mnull[39m,
+    [34muser_type[39m: "[32muser[39m",
+  }
+

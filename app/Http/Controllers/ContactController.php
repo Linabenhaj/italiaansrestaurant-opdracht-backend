@@ -2,36 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\ContactFormSubmitted;
-use App\Models\ContactMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use App\Models\ContactMessage;
+use App\Mail\ContactFormSubmitted;
+
 
 class ContactController extends Controller
 {
-    //contactformulier tonen
     public function show()
     {
         return view('contact');
     }
 
-    //verwerken ingegeven formulier
     public function submit(Request $request)
-{
-    $data = $request->validate([
-        'name'    => 'required|string|max:255',
-        'email'   => 'required|email',
-        'subject' => 'required|string|max:255',
-        'message' => 'required|string',
-    ]);
+    {
+        $data = $request->validate([
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|email',
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
 
-    // 1) Bewaar in database
-    ContactMessage::create($data);
+        // Bewaar in database
+        $message = ContactMessage::create($data);
 
-    // 2) Verstuur naar admin
-    Mail::to('admin@ehb.be')
-        ->queue(new ContactMessageMailable($data));
+        // Verstuur e-mail naar admin
+        Mail::to(config('mail.admin', 'admin@ehb.be'))
+            ->queue(new ContactFormSubmitted($message));
 
-    return back()->with('success','Uw bericht is verzonden! De admin krijgt een e-mail.');
-}
+        return back()->with('success', 'Uw bericht is verzonden!');
+    }
 }

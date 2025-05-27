@@ -3,16 +3,10 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use App\Http\Middleware\AdminMiddleware;
 
 class Kernel extends HttpKernel
 {
-    /**
-     * Globale HTTP middleware-stack.
-     *
-     * Deze middleware draait voor elke request.
-     *
-     * @var array<int, class-string>
-     */
     protected $middleware = [
         \App\Http\Middleware\TrustProxies::class,
         \Fruitcake\Cors\HandleCors::class,
@@ -22,11 +16,6 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
-    /**
-     * Groepen van middleware voor web- en api-routes.
-     *
-     * @var array<string, array<int, class-string|string>>
-     */
     protected $middlewareGroups = [
         'web' => [
             \App\Http\Middleware\EncryptCookies::class,
@@ -43,11 +32,6 @@ class Kernel extends HttpKernel
         ],
     ];
 
-    /**
-     * Middleware die je aan individuele routes kan toewijzen.
-     *
-     * @var array<string, class-string|string>
-     */
     protected $routeMiddleware = [
         'auth'             => \App\Http\Middleware\Authenticate::class,
         'auth.basic'       => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
@@ -58,7 +42,8 @@ class Kernel extends HttpKernel
         'signed'           => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle'         => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified'         => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'admin' => \App\Http\Middleware\AdminMiddleware::class,
 
-        
     ];
 }

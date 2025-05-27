@@ -5,16 +5,17 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LoginController extends Controller
 {
-    //loginformulier tonen
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-   //login de gebruiker
+
+    //login met controlers op user en admin+ foutive gegevens
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -22,29 +23,35 @@ class LoginController extends Controller
             'password' => 'required|string',
         ]);
 
-        // Probeer in te loggen
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            // Afhankelijk van rol doorsturen naar juiste dashboard
             $user = Auth::user();
-            if ($user->is_admin) {
-                return redirect()->route('admin.dashboard');
-            }
+            Log::info('Login gelukt voor gebruiker: ' . $user->email . ' (admin=' . ($user->is_admin ? 'ja' : 'nee') . ')');
 
-            return redirect()->route('user.dashboard');
+            return $this->authenticated($request, $user);
         }
 
-        // Foutmelding en behoud e-mail
-        return back()
-            ->withErrors(['email' => 'Deze gegevens komen niet overeen met onze records.'])
-            ->onlyInput('email');
+        return back()->withErrors([
+            'email' => 'Deze gegevens kloppen niet.',
+        ]);
     }
 
-    //Uitloggen gebruiker
+    //ziet wie admin en wie user en stuurt door
+    protected function authenticated(Request $request, $user)
+    {
+        if ($user->is_admin) {
+            Log::info('Redirect naar admin.dashboard');
+            return redirect()->route('admin.dashboard');
+        }
+
+        Log::info('Redirect naar user.dashboard');
+        return redirect()->route('user.dashboard');
+    }
+
     public function logout(Request $request)
     {
-        Auth::logout();
+            Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('home');

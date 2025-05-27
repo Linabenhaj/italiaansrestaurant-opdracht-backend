@@ -3,43 +3,51 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
-use Illuminate\Http\RedirectResponse;
+use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
-class AuthenticatedSessionController extends Controller
+class RegisteredUserController extends Controller
 {
-    public function create(): View
+    public function store(Request $request)
     {
-        return view('auth.login');
-    }
 
-    public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
 
-        $request->session()->regenerate();
 
-        $user = Auth::user();
+        $data = $request->validate([
+            'name'              => 'required|string|max:255',
+            'username'          => 'required|string|max:255|unique:users',
+            'email'             => 'required|string|email|max:255|unique:users',
+            'password'          => ['required', 'confirmed', Password::defaults()],
+            'birthday'          => 'nullable|date',
+            'about'             => 'nullable|string',
+            'profile_picture'   => 'nullable|image|max:2048',
+        ]);
 
-        // status te checken
-        
-        if ($user->isAdmin()) {
-            return redirect()->route('admin.dashboard');
+        // Sla profielfoto op, als er één is
+        if ($request->hasFile('profile_picture')) {
+            $data['profile_picture'] = $request
+                ->file('profile_picture')
+                ->store('profiles', 'public');
         }
 
+        // Maakt de gebruiker
+        $user = User::create([
+            'name'            => $data['name'],
+            'username'        => $data['username'],
+            'email'           => $data['email'],
+            'password'        => Hash::make($data['password']),
+            'birthday'        => $data['birthday'] ?? null,
+            'about'           => $data['about'] ?? null,
+            'profile_picture' => $data['profile_picture'] ?? null,
+        ]);
+
+        event(new Registered($user));
+
+        auth()->login($user);
+
         return redirect()->route('user.dashboard');
-    }
-
-    public function destroy(Request $request): RedirectResponse
-    {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect('/');
     }
 }

@@ -1,50 +1,54 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-  <meta charset="UTF-8">
-  <title>Nieuwe FAQ – Admin Panel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sigmar+One&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-</head>
-<body style="margin:0; font-family:'Outfit',sans-serif; display:flex; height:100vh; background:#FFF7D4;">
-  {{-- Sidebar --}}
-  @include('admin.partials.sidebar')
+@extends('admin.layout')
+@section('title', 'Nieuwe FAQ – Admin Panel')
+@section('content')
+<main style="flex:1; padding:2rem; overflow-y:auto; max-width:600px; margin:auto; background:#FFF7D4; font-family:'Outfit', sans-serif;">
+  <h1 style="color:#8B0000; font-family:'Sigmar One', cursive;">Nieuwe vraag toevoegen</h1>
 
-  <main style="flex:1; padding:2rem; overflow-y:auto;">
-    <h1 style="color:#8B0000;">Nieuwe vraag toevoegen</h1>
-    <a href="{{ route('admin.faq.index') }}"
-       style="display:inline-block; margin-bottom:1rem; color:#8B0000; text-decoration:none;">
-      &larr; Terug naar FAQ
-    </a>
-    <form method="POST" action="{{ route('admin.faq.store') }}" style="max-width:600px; margin-top:1rem;">
-      @csrf
+  <a href="{{ route('admin.faq.index') }}"
+     style="display:inline-block; margin-bottom:1rem; color:#8B0000; text-decoration:none;">
+    &larr; Terug naar FAQ
+  </a>
 
-      <div style="margin-bottom:1rem;">
-        <label for="faq_category_id" style="display:block; margin-bottom:.5rem;">Categorie</label>
-        <select name="faq_category_id" id="faq_category_id" required style="width:100%; padding:.5rem; border:1px solid #ccc; border-radius:4px;">
-          @foreach($categories as $category)
-            <option value="{{ $category->id }}">{{ $category->name }}</option>
-          @endforeach
-        </select>
-        @error('faq_category_id') <div style="color:#c00;">{{ $message }}</div> @enderror
-      </div>
+  <form method="POST" action="{{ route('admin.faq.store') }}"
+        style="background:#fff; padding:2rem; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1);">
+    @csrf
 
-      <div style="margin-bottom:1rem;">
-        <label for="question" style="display:block; margin-bottom:.5rem;">Vraag</label>
-        <input type="text" name="question" id="question" value="{{ old('question') }}" required style="width:100%; padding:.5rem; border:1px solid #ccc; border-radius:4px;">
-        @error('question') <div style="color:#c00;">{{ $message }}</div> @enderror
-      </div>
+    {{-- Categorie --}}
+    <div style="margin-bottom:1rem;">
+      <label for="faq_category_id">Categorie</label><br>
+      <select name="faq_category_id" id="faq_category_id" required
+              style="width:100%; padding:.5rem; border:1px solid #ccc; border-radius:4px;">
+        <option value="" disabled selected>Kies een categorie</option>
+        @foreach($categories as $category)
+          <option value="{{ $category->id }}" {{ old('faq_category_id') == $category->id ? 'selected' : '' }}>
+            {{ $category->name }}
+          </option>
+        @endforeach
+      </select>
+      @error('faq_category_id') <div style="color:#c00;">{{ $message }}</div> @enderror
+    </div>
 
-      <div style="margin-bottom:1rem;">
-        <label for="answer" style="display:block; margin-bottom:.5rem;">Antwoord (optioneel)</label>
-        <textarea name="answer" id="answer" rows="4" style="width:100%; padding:.5rem; border:1px solid #ccc; border-radius:4px;">{{ old('answer') }}</textarea>
-        @error('answer') <div style="color:#c00;">{{ $message }}</div> @enderror
-      </div>
+    {{-- Vraag --}}
+    <div style="margin-bottom:1rem;">
+      <label for="question">Vraag</label><br>
+      <input type="text" id="question" name="question" value="{{ old('question') }}" required
+             style="width:100%; padding:.5rem; border:1px solid #ccc; border-radius:4px;">
+      @error('question') <div style="color:#c00;">{{ $message }}</div> @enderror
+    </div>
 
-      <button type="submit" style="background:#8B0000; color:#fff; padding:.75rem 1.5rem; border:none; border-radius:5px; cursor:pointer;">
-        Opslaan
-      </button>
+    {{-- Antwoord (optioneel) --}}
+    <div style="margin-bottom:1rem;">
+      <label for="answer">Antwoord (optioneel)</label><br>
+      <textarea id="answer" name="answer" rows="4"
+                style="width:100%; padding:.5rem; border:1px solid #ccc; border-radius:4px;">{{ old('answer') }}</textarea>
+      @error('answer') <div style="color:#c00;">{{ $message }}</div> @enderror
+    </div>
 
-    </form>
-  </main>
-</body>
-</html>
+    {{-- Submit --}}
+    <button type="submit"
+            style="background:#8B0000; color:#fff; padding:.75rem 1.5rem; border:none; border-radius:5px; cursor:pointer;">
+      Opslaan
+    </button>
+  </form>
+</main>
+@endsection

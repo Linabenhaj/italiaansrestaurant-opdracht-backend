@@ -8,19 +8,23 @@ use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
-    //allle binnekomde berichten voor de admin
-    public function inbox()
+    public function index()
     {
-        $messages = ContactMessage::latest()->paginate(20);
+        $messages = ContactMessage::orderBy('created_at', 'desc')->get();
         return view('admin.contact.inbox', compact('messages'));
     }
-
-    //verwijderen van contactberichten
-    public function destroy(ContactMessage $message)
+//meer in detail zien wat bericht is
+    public function show($id)
     {
+        $message = ContactMessage::findOrFail($id);
+        return view('admin.contact.show', compact('message'));
+    }
+
+    public function destroy($id)
+    {
+        $message = ContactMessage::findOrFail($id);
         $message->delete();
-        return redirect()
-            ->route('admin.contact.inbox')
-            ->with('success', 'Bericht verwijderd.');
+
+        return redirect()->route('admin.contact.index')->with('success', 'Bericht succesvol verwijderd.');
     }
 }

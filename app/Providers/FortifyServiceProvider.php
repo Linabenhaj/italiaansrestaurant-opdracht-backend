@@ -15,32 +15,32 @@ use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
+    
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
-    public function boot(): void
-    {
-        Fortify::createUsersUsing(CreateNewUser::class);
-        Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
-        Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
-        Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
+    public function boot()
+{
+    Fortify::authenticateUsing(function (Request $request) {
+        $user = \App\Models\User::where('email', $request->email)->first();
 
-        RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+        if ($user && Hash::check($request->password, $user->password)) {
+            
+            session()->put('is_admin', $user->is_admin); 
+            return $user;
+        }
 
-            return Limit::perMinute(5)->by($throttleKey);
-        });
+        return null;
+    });
 
-        RateLimiter::for('two-factor', function (Request $request) {
-            return Limit::perMinute(5)->by($request->session()->get('login.id'));
-        });
-    }
+    Fortify::afterLoginResponse(function (Request $request, $user) {
+        if ($user->is_admin) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return redirect()->route('user.dashboard');
+    });
+}
 }

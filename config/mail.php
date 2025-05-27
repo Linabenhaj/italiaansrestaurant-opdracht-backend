@@ -2,26 +2,27 @@
 
 return [
 
+    /*
+    |--------------------------------------------------------------------------
+    | Default Mailer
+    |--------------------------------------------------------------------------
+    */
+    'default' => env('MAIL_MAILER', 'smtp'),
 
-    'default' => env('MAIL_MAILER', 'log'),
-
-
-
+    /*
+    |--------------------------------------------------------------------------
+    | Mailer Configurations
+    |--------------------------------------------------------------------------
+    */
     'mailers' => [
 
         'smtp' => [
-            'transport' => 'smtp',
-            'scheme' => env('MAIL_SCHEME'),
-            'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', '127.0.0.1'),
-            'port' => env('MAIL_PORT', 2525),
-            'username' => env('MAIL_USERNAME'),
-            'password' => env('MAIL_PASSWORD'),
-            'timeout' => null,
-            'local_domain' => env(
-                'MAIL_EHLO_DOMAIN',
-                parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)
-            ),
+            'transport'  => 'smtp',
+            'host'       => env('MAIL_HOST', 'smtp.mailtrap.io'),
+            'port'       => env('MAIL_PORT', 2525),
+            'encryption' => env('MAIL_ENCRYPTION', null),
+            'username'   => env('MAIL_USERNAME'),
+            'password'   => env('MAIL_PASSWORD'),
         ],
 
         'ses' => [
@@ -30,7 +31,6 @@ return [
 
         'postmark' => [
             'transport' => 'postmark',
-            
         ],
 
         'resend' => [
@@ -39,12 +39,12 @@ return [
 
         'sendmail' => [
             'transport' => 'sendmail',
-            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+            'path'      => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
         ],
 
         'log' => [
             'transport' => 'log',
-            'channel' => env('MAIL_LOG_CHANNEL'),
+            'channel'   => env('MAIL_LOG_CHANNEL'),
         ],
 
         'array' => [
@@ -52,32 +52,36 @@ return [
         ],
 
         'failover' => [
-            'transport' => 'failover',
-            'mailers' => [
-                'smtp',
-                'log',
-            ],
+            'transport'   => 'failover',
+            'mailers'     => ['smtp', 'log'],
             'retry_after' => 60,
         ],
 
         'roundrobin' => [
-            'transport' => 'roundrobin',
-            'mailers' => [
-                'ses',
-                'postmark',
-            ],
+            'transport'   => 'roundrobin',
+            'mailers'     => ['ses', 'postmark'],
             'retry_after' => 60,
         ],
 
     ],
 
-
+    /*
+    |--------------------------------------------------------------------------
+    | Global "From" Address
+    |--------------------------------------------------------------------------
+    */
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'no-reply@demomailtrap.com'),
+        'name'    => env('MAIL_FROM_NAME', 'Pizzeria Antonio'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Notification Address
+    |--------------------------------------------------------------------------
+    */
+    'admin' => env('ADMIN_EMAIL', 'admin@ehb.be'),
 
-    'admin_address' => env('MAIL_ADMIN_ADDRESS', 'admin@ehb.be'),
+
 
 ];

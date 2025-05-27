@@ -1,44 +1,36 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Mijn Profiel – Pizzeria Antonio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sigmar+One&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-</head>
-<body style="margin:0; font-family:'Outfit',sans-serif; background:#FFF7D4;">
+@extends('layouts.user')
 
-  @include('partials.header')
-  @include('partials.navbar')
+@section('page-title', 'Mijn Profiel')
 
-  <main style="padding:2rem; max-width:600px; margin:2rem auto; background:#fff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-    <h1 style="font-family:'Sigmar One',cursive; color:#8B0000; text-align:center; margin-bottom:1.5rem;">Mijn Profiel</h1>
+@section('dashboard-content')
+  <div class="max-w-md mx-auto bg-white rounded-lg shadow p-6 space-y-6">
+    <h1 class="font-sigmar text-2xl text-red-900 text-center mb-4">Mijn Profiel</h1>
 
-    @if(session('success'))
-      <div style="background:#e0ffe0; color:#080; padding:1rem; border-radius:4px; margin-bottom:1.5rem;">
-        {{ session('success') }}
-      </div>
-    @endif
+    <div class="flex flex-col items-center space-y-4">
+      @if(auth()->user()->profile_picture)
+        <img src="{{ asset('storage/' . auth()->user()->profile_picture) }}"
+             alt="Profielfoto"
+             class="w-32 h-32 rounded-full object-cover border-2 border-gray-300">
+      @else
+        <div class="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
+          Geen foto
+        </div>
+      @endif
 
-    @if($user->profile_picture)
-      <div style="text-align:center; margin-bottom:1.5rem;">
-        <img src="{{ asset('storage/'.$user->profile_picture) }}" alt="Profielfoto" style="width:150px; height:150px; object-fit:cover; border-radius:50%;">
-      </div>
-    @endif
-
-    <p><strong>Naam:</strong> {{ $user->name }}</p>
-    <p><strong>Gebruikersnaam:</strong> {{ $user->username }}</p>
-    <p><strong>E-mail:</strong> {{ $user->email }}</p>
-    <p><strong>Geboortedatum:</strong> {{ $user->birthday ?? 'Niet opgegeven' }}</p>
-    <p><strong>Over mij:</strong><br>{{ $user->about ?? 'Geen extra informatie.' }}</p>
-
-    <div style="text-align:center; margin-top:2rem;">
-      <a href="{{ route('profile.edit') }}"
-         style="background:#8B0000; color:#fff; padding:.75rem 1.5rem; border-radius:5px; text-decoration:none;">
-        Profiel bewerken
-      </a>
+      <p><strong>Naam:</strong> {{ auth()->user()->name }}</p>
+      <p><strong>Gebruikersnaam:</strong> {{ auth()->user()->username }}</p>
+      <p><strong>E-mail:</strong> {{ auth()->user()->email }}</p>
+      <p><strong>Geboortedatum:</strong>
+        {{ auth()->user()->birthday ? auth()->user()->birthday->format('d-m-Y') : 'Niet opgegeven' }}
+      </p>
+      <p><strong>Over mij:</strong> {{ auth()->user()->about ?: 'Geen extra info' }}</p>
     </div>
-  </main>
 
-</body>
-</html>
+    <div class="text-center">
+      <x-button color="primary" onclick="location.href='{{ route('user.edit', auth()->user()) }}'">
+  Profiel bewerken
+</x-button>
+
+    </div>
+  </div>
+@endsection

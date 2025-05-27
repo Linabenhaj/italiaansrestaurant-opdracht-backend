@@ -7,57 +7,63 @@ use Illuminate\Http\Request;
 use App\Models\Faq;
 use App\Models\FaqCategory;
 
-class FaqController extends Controller
+class AdminFaqController extends Controller
 {
-    public function publicIndex()
+    public function index()
     {
-        // Laad alle categorieën met hun vragen
-        $faqCategories = FaqCategory::with('faqs')->get();
-        return view('faq.index', compact('faqCategories'));
+        $categories = FaqCategory::all();
+        $pendingFaqs = Faq::whereNull('answer')->get();
+        $answeredFaqs = Faq::whereNotNull('answer')->get();
+
+        return view('admin.faq.index', compact('categories', 'pendingFaqs', 'answeredFaqs'));
     }
 
     public function create()
     {
-        $categories = FaqCategory::all();
-        return view('admin.faqs.create', compact('categories'));
+        $categories = FaqCategory::all(); 
+        return view('admin.faq.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'faq_category_id' => 'required|exists:faq_categories,id',
-            'question' => 'required|string|max:255',
-            'answer' => 'required|string',
+            'question'        => 'required|string|max:255',
+            'answer'          => 'nullable|string',
         ]);
+        Faq::create($data);
 
-        Faq::create($request->only(['faq_category_id', 'question', 'answer']));
 
-        return redirect()->route('admin.faqs.index')->with('success', 'FAQ aangemaakt.');
+
+
+        return redirect()->route('admin.faq.index')->with('success', 'Nieuwe vraag toegevoegd.');
     }
 
     public function edit(Faq $faq)
     {
         $categories = FaqCategory::all();
-        return view('admin.faqs.edit', compact('faq', 'categories'));
+        return view('admin.faq.edit', compact('faq', 'categories'));
     }
 
     public function update(Request $request, Faq $faq)
     {
-        $request->validate([
+        $data = $request->validate([
             'faq_category_id' => 'required|exists:faq_categories,id',
-            'question' => 'required|string|max:255',
-            'answer' => 'required|string',
+            'question'        => 'required|string|max:255',
+            'answer'          => 'nullable|string',
         ]);
 
-        $faq->update($request->only(['faq_category_id', 'question', 'answer']));
+        $faq->update($data);
 
-        return redirect()->route('admin.faqs.index')->with('success', 'FAQ bijgewerkt.');
+        return redirect()->route('admin.faq.index')->with('success', 'FAQ bijgewerkt.');
     }
 
     public function destroy(Faq $faq)
+
+    
     {
         $faq->delete();
 
-        return redirect()->route('admin.faqs.index')->with('success', 'FAQ verwijderd.');
+        return redirect()->route('admin.faq.index')->with('success', 'FAQ verwijderd.');
     }
 }

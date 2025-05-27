@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->string('role')->default('user');
             $table->date('birthday')->nullable();            
             $table->text('about')->nullable();               
-            $table->string('profile_picture')->nullable();   
+           $table->string('profile_picture')->nullable();
 
             $table->boolean('is_admin')->default(false);
             $table->rememberToken();

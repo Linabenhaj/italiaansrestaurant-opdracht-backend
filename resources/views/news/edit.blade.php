@@ -1,41 +1,43 @@
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-  <meta charset="UTF-8">
-  <title>Bewerk nieuwsitem – Admin Panel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sigmar+One&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
-</head>
-<body style="margin:0;font-family:'Outfit',sans-serif;display:flex;min-height:100vh;background:#FFF7D4;">
-  @include('admin.partials.sidebar')
+@extends('layouts.app')
 
-  <main style="flex:1;padding:2rem;overflow-y:auto;max-width:600px;margin:auto;">
-    <h1 style="color:#8B0000;">Bewerk: {{ $news->title }}</h1>
-    <form method="POST" action="{{ route('admin.news.update', $news) }}" enctype="multipart/form-data">
-      @csrf @method('PUT')
+@section('title', 'Nieuws bewerken – Pizzeria Antonio')
 
-      <label>Titel</label>
-      <input type="text" name="title" value="{{ old('title',$news->title) }}" required style="width:100%;padding:.5rem;">
-      @error('title')<div class="error">{{ $message }}</div>@enderror
+@section('content')
+  <div class="bg-white rounded-lg shadow p-8 max-w-xl mx-auto">
+    <h1 class="font-sigmar text-2xl text-red-900 text-center mb-6">Nieuwsitem bewerken</h1>
 
-      <label>Huidige afbeelding</label><br>
-      <img src="{{ asset('storage/'.$news->image_path) }}" style="max-width:200px;border-radius:4px;"><br>
+    <form action="{{ route('news.update', $newsItem) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+      @csrf
+      @method('PUT')
 
-      <label>Nieuwe afbeelding (optioneel)</label>
-      <input type="file" name="image">
-      @error('image')<div class="error">{{ $message }}</div>@enderror
+      <div>
+        <label for="title" class="font-medium">Titel</label>
+        <input id="title" name="title" type="text" value="{{ old('title', $newsItem->title) }}" required class="w-full p-2 border rounded">
+        <x-error field="title" />
+      </div>
 
-      <label>Content</label>
-      <textarea name="content" rows="6" required style="width:100%;padding:.5rem;">{{ old('content',$news->content) }}</textarea>
-      @error('content')<div class="error">{{ $message }}</div>@enderror
+      <div>
+        <label class="font-medium">Huidige afbeelding</label>
+        @if($newsItem->image_path)
+          <div class="my-2">
+            <img src="{{ asset('storage/'.$newsItem->image_path) }}" class="w-full max-h-52 object-cover rounded">
+          </div>
+        @endif
+        <label for="image" class="font-medium">Nieuwe afbeelding (optioneel)</label>
+        <input id="image" name="image" type="file" accept="image/*" class="w-full">
+        <x-error field="image" />
+      </div>
 
-      <label>Publicatiedatum</label>
-      <input type="date" name="published_at" value="{{ old('published_at',$news->published_at->toDateString()) }}">
-      @error('published_at')<div class="error">{{ $message }}</div>@enderror
+      <div>
+        <label for="content" class="font-medium">Inhoud</label>
+        <textarea id="content" name="content" rows="6" required class="w-full p-2 border rounded">{{ old('content', $newsItem->content) }}</textarea>
+        <x-error field="content" />
+      </div>
 
-      <button type="submit" style="background:#8B0000;color:#fff;padding:.75rem 1.5rem;border:none;border-radius:5px;margin-top:1rem;">
-        Bijwerken
-      </button>
+      <div class="text-center">
+        <x-button type="submit" color="primary">Bijwerken</x-button>
+        <x-button :href="route('news.index')" color="secondary">Annuleren</x-button>
+      </div>
     </form>
-  </main>
-</body>
-</html>
+  </div>
+@endsection

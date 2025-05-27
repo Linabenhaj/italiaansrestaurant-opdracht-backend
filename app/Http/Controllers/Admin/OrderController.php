@@ -3,24 +3,34 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Order;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    //alle bestellingen op een rij voor de admin
-    public function index()
+    //alle bestellingen zien 
+    public function index(Request $request)
     {
-        $orders = Order::latest()->get();
+        
+        $orders = Order::with(['user', 'pizzas'])
+                       ->orderBy('created_at', 'desc')
+                       ->paginate(10); // max tien is obverzichtelijker
+
         return view('admin.orders.index', compact('orders'));
     }
 
-    //verijweren van bestaande bestellingen 
-    public function destroy($id)
+    public function destroy(Order $order)
     {
-        $order = Order::findOrFail($id);
         $order->delete();
 
-        return back()->with('success', 'Bestelling verwijderd.');
+        return redirect()
+            ->route('admin.orders.index')
+            ->with('success', 'Bestelling verwijderd.');
     }
+
+    public function show(Order $order)
+{
+    return view('admin.orders.show', compact('order'));
+}
+
 }

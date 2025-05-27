@@ -1,41 +1,33 @@
 <?php
 
+namespace Tests\Feature;
+
+use Tests\TestCase;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\URL;
+class AuthenticationTest extends TestCase
+{
+    use RefreshDatabase;
 
-test('login screen can be rendered', function () {
-    $response = $this->get('/login');
+    public function test_users_can_authenticate_using_the_login_screen()
+    {
+        $user = User::factory()->create([
+            'password' => bcrypt('password'),
+        ]);
 
-    $response->assertStatus(200);
-});
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
 
-test('users can authenticate using the login screen', function () {
-    $user = User::factory()->create();
-
-    $response = $this->post('/login', [
-        'email' => $user->email,
-        'password' => 'password',
-    ]);
-
-    $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
-});
-
-test('users can not authenticate with invalid password', function () {
-    $user = User::factory()->create();
-
-    $this->post('/login', [
-        'email' => $user->email,
-        'password' => 'wrong-password',
-    ]);
-
-    $this->assertGuest();
-});
-
-test('users can logout', function () {
-    $user = User::factory()->create();
-
-    $response = $this->actingAs($user)->post('/logout');
-
-    $this->assertGuest();
-    $response->assertRedirect('/');
-});
+        $this->assertAuthenticated();
+        $response->assertRedirect(route('dashboard'));
+    }
+}

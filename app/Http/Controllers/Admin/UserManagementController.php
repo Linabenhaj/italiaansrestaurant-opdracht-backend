@@ -25,38 +25,29 @@ class UserManagementController extends Controller
     }
 
     //opslaan nieuwe gebruiker
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'name'            => 'required|string|max:255',
-            'username'        => 'required|string|max:50|unique:users,username',
-            'email'           => 'required|email|unique:users',
-            'password'        => 'required|string|min:8|confirmed',
-            'is_admin'        => 'sometimes|boolean',
-            'profile_picture' => 'nullable|image|max:2048',
-        ]);
+   public function store(Request $request)
+{
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+        'username' => 'required|string|max:255|unique:users',
+        'email' => 'required|email|max:255|unique:users',
+        'password' => 'required|string|min:8|confirmed',
+        'profile_picture' => 'nullable|image|max:2048',
+    ]);
 
-        // Profielfoto verwerken
-        $path = null;
-        if ($request->hasFile('profile_picture')) {
-            $file     = $request->file('profile_picture');
-            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
-            $path     = $file->storeAs('profiles', $filename, 'public');
-        }
+    $data['password'] = bcrypt($data['password']);
+    $data['is_admin'] = $request->has('is_admin'); // ✅ sla checkbox op als boolean
 
-        User::create([
-            'name'            => $data['name'],
-            'username'        => $data['username'],
-            'email'           => $data['email'],
-            'password'        => bcrypt($data['password']),
-            'is_admin'        => ! empty($data['is_admin']),
-            'profile_picture' => $path,
-        ]);
-
-        return redirect()
-            ->route('admin.users.index')
-            ->with('success', 'Nieuwe gebruiker aangemaakt.');
+    if ($request->hasFile('profile_picture')) {
+        $data['profile_picture'] = $request->file('profile_picture')->store('profile_pictures', 'public');
     }
+
+    User::create($data);
+
+    return redirect()->route('admin.users.index')->with('success', 'Gebruiker aangemaakt.');
+}
+
+
 
     //bestaande gebruiker bewerken form
     public function edit(User $user)

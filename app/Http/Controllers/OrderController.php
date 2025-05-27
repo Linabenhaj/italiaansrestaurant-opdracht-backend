@@ -1,30 +1,58 @@
 <?php
+// app/Http/Controllers/OrderController.php
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Pizza;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
-    //niuewe bestelling opgeslagen
     public function store(Request $request)
     {
-        // Valideer de invoer
+        // Valideer dat er één pizza-id binnenkomt
         $data = $request->validate([
-            'pizza'       => 'required|string|max:255',
-            'opmerkingen' => 'nullable|string|max:1000',
+            'pizza' => 'required|exists:pizzas,id',
         ]);
 
-        // Maak de bestelling aan 
-        Order::create([
-            'user_id'     => $request->user()->id,
-            'pizza'       => $data['pizza'],
-            'opmerkingen' => $data['opmerkingen'] ?? null,
-            'status'      => 'pending',  // of wat je eigen status-logica is
+        $user  = Auth::user();
+        $pizza = Pizza::findOrFail($data['pizza']);
+
+        // Maak een nieuwe bestelling aan
+        $order = Order::create([
+            'user_id'     => $user->id,
+            'total_price' => $pizza->price,  
         ]);
 
-        // Terug met succesmelding
-        return back()->with('success', 'Je bestelling is ontvangen! Buon appetito 🍕');
+        // Koppel de pizza met quantity=1 en unit-price
+        $order->pizzas()->attach($pizza->id, [
+            'quantity' => 1,
+            'price'    => $pizza->price,
+        ]);
+
+        // Redirect naar “Mijn bestellingen”
+        return redirect()
+            ->route('orders.index')
+            ->with('success', 'Pizza “'.$pizza->name.'” besteld!');
+    }
+
+    public function index()
+    {
+        $orders = Auth::user()
+                      ->orders()
+                      ->with('pizzas')
+                      ->latest()
+                      ->get();
+
+        return view('orders.index', compact('orders'));
+    }
+
+    public function destroy(Order $order)
+    {
+        // controleer dat order bij deze user hoort
+        $order->delete();
+        return back()->with('success', 'Bestelling verwijderd.');
     }
 }

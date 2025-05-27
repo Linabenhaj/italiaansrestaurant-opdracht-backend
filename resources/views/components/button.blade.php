@@ -1,19 +1,23 @@
-@props([
-    'type'  => 'button',
-    'color' => 'primary', // primary | secondary | danger
-])
+@props(['type' => 'submit', 'color' => 'primary', 'href' => null])
 
 @php
-    $classes = match($color) {
-        'secondary' => 'bg-gray-300 text-gray-800 hover:bg-gray-400',
-        'danger'    => 'bg-red-600 text-white hover:bg-red-700',
-        default     => 'bg-red-800 text-white hover:bg-red-900',
-    };
+  $base = 'inline-block px-4 py-2 rounded font-semibold text-sm';
+  $colors = [
+    'primary' => 'bg-red-800 hover:bg-red-900 text-white',
+    'danger' => 'bg-red-600 hover:bg-red-700 text-white',
+    'secondary' => 'bg-gray-500 hover:bg-gray-600 text-white',
+  ];
+  $finalClass = $base . ' ' . ($colors[$color] ?? $colors['primary']);
 @endphp
 
-<button
-    type="{{ $type }}"
-    {{ $attributes->merge(['class' => "px-4 py-2 rounded {$classes} transition"]) }}
->
+@if ($href)
+  <a href="{{ $href }}"
+     {{ $attributes->merge(['class' => $finalClass]) }}>
     {{ $slot }}
-</button>
+  </a>
+@else
+  <button type="{{ $type }}"
+          {{ $attributes->merge(['class' => $finalClass]) }}>
+    {{ $slot }}
+  </button>
+@endif

@@ -13,10 +13,11 @@ class AdminUserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'admin@ehb.be'],
             [
-                'username'   => 'admin',
-                'name'       => 'Admin Gebruiker',
-                'password'   => Hash::make('Password!321'),
-                'is_admin'   => 1,
+                'name' => 'Admin',
+                'username' => 'adminuser', 
+                'email_verified_at' => now(),
+                'password' => Hash::make('Password!321'),
+                'role' => 'admin',
             ]
         );
     }

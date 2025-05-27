@@ -11,15 +11,9 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
      protected $fillable = [
-        'name',
-        'username',
-        'email',
-        'password',
-        'birthday',
-        'profile_picture',
-        'about',
-        'is_admin',
-    ];
+    'name','username','email','password',
+    'birthday','about','profile_picture',
+];
 
     protected $hidden = [
         'password',
@@ -33,14 +27,16 @@ class User extends Authenticatable
     ];
 
     public function isAdmin(): bool
-{
-    return $this->is_admin === 1
-        || $this->user_type === 'admin';
-}
+    {
+        return $this->user_type === 'admin';
+    }
 
 
+    // onderaan de class
     public function orders()
     {
         return $this->hasMany(Order::class);
     }
+
+
 }

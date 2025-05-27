@@ -2,32 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\FaqCategory;
-use App\Models\Faq;
+use Illuminate\Http\Request;
 
 class FaqController extends Controller
 {
-    //publikee faq categorie pagina 
-   public function publicIndex()
-{
-    $faqCategories = FaqCategory::with('faqs')->get();
-    return view('faq.index', compact('faqCategories'));
-}
+    /**
+     * Toont de publieke FAQ-pagina.
+     */
+    public function publicIndex()
+    {
+        // Haal categorieën + bijbehorende faqs op
+        $faqCategories = FaqCategory::with('faqs')->get();
 
-    //nieuwe vragen inzendingen verwerkenn
+        return view('faq.index', compact('faqCategories'));
+    }
+
+    //Verwerkt een ingestuurde vraag
+     
     public function submit(Request $request)
     {
         $data = $request->validate([
             'faq_category_id' => 'required|exists:faq_categories,id',
-            'question'        => 'required|string|max:255',
-            'email'           => 'nullable|email',
-            'name'            => 'nullable|string|max:100',
+            'question'        => 'required|string|min:5|max:500',
         ]);
 
-        // Sla de ingestuurde vraag op zonder antwoord
-        Faq::create($data);
 
-        return back()->with('success', 'Bedankt! Je vraag is ontvangen en wordt binnenkort beantwoord.');
+        return redirect()
+            ->route('faq.public')
+            ->with('success', 'Bedankt! Je vraag is ontvangen en wordt beoordeeld.');
     }
 }

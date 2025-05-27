@@ -32,6 +32,9 @@ class FaqCategoryController extends Controller
         
     }
 
+
+    
+
     public function edit(FaqCategory $faqCategory)
     {
         return view('admin.faq_categories.edit', compact('faqCategory'));

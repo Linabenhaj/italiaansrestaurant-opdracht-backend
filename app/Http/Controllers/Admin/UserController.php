@@ -9,57 +9,51 @@ use App\Models\User;
 
 class UserController extends Controller
 {
-    //dashboard voor ingelogde gebruikers
-     public function userDashboard()
+    // Dashboard voor ingelogde gebruikers
+    public function dashboard()
     {
         $user = auth()->user();
-        return view('admin.user.dashboard', compact('user'));
+        return view('user.dashboard', compact('user'));
     }
-//profiel ingelogde gebruiker
+
+    // Publiek profiel bekijken
     public function profile()
     {
         $user = Auth::user();
-        return view('admin.user.profile', compact('user'));
+        return view('user.profile', compact('user'));
     }
 
-    //formulier om profiel te bewerken 
-    public function edit($username)
+    // Formulier voor het bewerken van eigen profiel
+    public function edit()
     {
-        $user = Auth::user();
-        // Ligt in resources/views/admin/user/edit.blade.php
-        return view('admin.user.edit', compact('user'));
+        $user = auth()->user();
+        return view('user.edit', compact('user'));
     }
 
-  //opslaan bewerkte profiel
+    // Profiel bijwerken
     public function update(Request $request)
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
         $data = $request->validate([
-            'username'        => 'required|string|max:255|unique:users,username,' . $user->id,
-            'email'           => 'required|email|max:255|unique:users,email,' . $user->id,
-            'birthday'        => 'nullable|date',
-            'about'           => 'nullable|string|max:1000',
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'birthday' => 'nullable|date',
+            'about' => 'nullable|string',
             'profile_picture' => 'nullable|image|max:2048',
         ]);
 
-        $user->username = $data['username'];
-        $user->email    = $data['email'];
-        $user->birthday = $data['birthday'] ?? null;
-        $user->about    = $data['about'] ?? null;
-
         if ($request->hasFile('profile_picture')) {
+            // Oude verwijderen indien bestaand
             if ($user->profile_picture) {
-                Storage::delete('public/' . $user->profile_picture);
+                Storage::disk('public')->delete($user->profile_picture);
             }
-            $path = $request->file('profile_picture')->store('profile_pictures', 'public');
-            $user->profile_picture = $path;
+            $data['profile_picture'] = $request->file('profile_picture')->store('profile_pictures', 'public');
         }
 
-        $user->save();
+        $user->update($data);
 
-        return redirect()
-            ->route('user.dashboard')
-            ->with('success', 'Profiel succesvol bijgewerkt!');
+        return redirect()->route('user.dashboard')->with('success', 'Profiel succesvol bijgewerkt.');
     }
 }
