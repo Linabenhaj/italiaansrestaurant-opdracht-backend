@@ -1,5 +1,5 @@
 1. Projectbeschrijving en functionaliteiten
-Deze webapplicatie voor een Italiaans restaurant biedt bezoekers een compleet overzicht van het menu én laat hen pizza’s bestellen en bekijken in mijn bestellingen. Daarnaast kunnen geregistreerde gebruikers nieuwsberichten lezen, FAQ’s bekijken en eigen vragen indienen, en hun profiel (profielfoto, gebruikersnaam, verjaardag, bio) updaten. Beheerders krijgen via een beveiligd admin-dashboard inzage in bestellingen, nieuws, contactberichten en FAQ’s, én kunnen nieuwe gebruikers en rechten beheren.
+Deze webapplicatie voor een Italiaans restaurant biedt bezoekers een compleet overzicht van het menu én laat hen pizza’s bestellen en bekijken in mijn bestellingen na ingelogd te zijn. Daarnaast kunnen geregistreerde gebruikers nieuwsberichten lezen, FAQ’s bekijken en eigen vragen indienen, en hun profiel (profielfoto, gebruikersnaam, verjaardag, bio) updaten. Beheerders krijgen via een beveiligd admin-dashboard over bestellingen, nieuws, contactberichten en FAQ’s, én kunnen nieuwe gebruikers en rechten beheren.
 
 2. Belangrijkste functionaliteiten
 
@@ -18,6 +18,8 @@ FAQ: bekijken per categorie en eigen vragen indienen.
 Contactformulier: bezoekers kunnen berichten sturen, admins kunnen beantwoorden.
 
 Admin-dashboard: beveiligd via Middleware, met CRUD-functionaliteit voor news, FAQ, contact en bestellingen.
+
+Bestelsysteem: De gebruiker die ingelogd is kan pizza's bestellen.
 
 
 3. Tests uitvoeren
