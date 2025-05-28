@@ -48,9 +48,7 @@ debuggen van bestel-logica in app/Http/Controllers/Admin/OrderController.php (re
 
 validatieklassen in app/Http/Requests/ProfileUpdateRequest.php (regels 5–14),
 
-database-seeders in database/seeders/PizzaSeeder.php (regels 10–50),
-
-inrichting van app/Http/Middleware/AdminMiddleware.php (regels 1–20).
+inrichting van app/Http/Middleware (regels 1–20).
 
 Gebruikt om te debuggen in het algemeen
 
